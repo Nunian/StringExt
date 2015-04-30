@@ -11,9 +11,9 @@ String extensions for Swift. If you do a lot of work with strings, this might he
 	var str4 = "1.8"
 	
 	str[-3] 						// s
-	str["is"] 						// 2
 	str[0, 4] 						// This
 	str.substrto(4)					// This
+	str["is"] 						// 2
 	str["T", "just"]				// his is a test, this is 
 	str.split(" ")					// "This", "is", "a", "test,", "this", "is", "just", "a", "test."
 	str.reverse.split(" ") 			// ".tset", "a", "tsuj", "si", "siht", ",tset", "a", "si", "sihT"
