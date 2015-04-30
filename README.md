@@ -10,13 +10,13 @@ String extensions for Swift. If you do a lot of work with strings, this might he
 	var str3 = "   This is a test, this is just a test.   "
 	var str4 = "1.8"
 	
-	str["is"] 						// 2
 	str[-3] 						// s
-	str.substrTo(4)					// This
+	str["is"] 						// 2
+	str[0, 4] 						// This
+	str.substrto(4)					// This
 	str["T", "just"]				// his is a test, this is 
-	str.reverse.split(" ") 			// ".tset", "a", "tsuj", "si", "siht", ",tset", "a", "si", "sihT"
 	str.split(" ")					// "This", "is", "a", "test,", "this", "is", "just", "a", "test."
-	str[5, 7]						// is
+	str.reverse.split(" ") 			// ".tset", "a", "tsuj", "si", "siht", ",tset", "a", "si", "sihT"
 	str.padding(direction: "left", repetition: 5, with: "z") // zzzzzzThis is a test, this is just a test.
 	str.padding(direction: "right", repetition: 5, with: "z") // This is a test, this is just a test.zzzzzz
 	str.padding(direction: "both", repetition: 5, with: "z") // zzzzzzThis is a test, this is just a test.zzzzzz

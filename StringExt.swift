@@ -56,12 +56,12 @@ extension String {
     }
     
     // Get substring starting from
-    public func substrFrom(start: Int) -> String {
+    public func substrfrom(start: Int) -> String {
         return self.substr(start: start, end: self.length)
     }
     
     // Get substring up to
-    public func substrTo(end: Int) -> String {
+    public func substrto(end: Int) -> String {
         return self.substr(start: 0, end: end)
     }
     
