@@ -1,5 +1,7 @@
 # StringExt
-String extensions for Swift. If you do a lot of work with strings, this might help speed things up for you.
+String extensions for Swift. If you do a lot of work with strings, this might help speed things up for you. The subscript section is borrowed/based on Swifter String by [Enrico Borba] [1].
+
+[1]: https://github.com/enricozb        "Enrico Borba"
 
 ####Usage Examples:
 
