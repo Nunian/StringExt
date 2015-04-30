@@ -11,7 +11,7 @@ String extensions for Swift. If you do a lot of work with strings, this might he
 	var str4 = "1.8"
 	
 	str[-3] 						// s
-	str[0, 4] 						// This
+	str[start: 0, end: 4] 			// This
 	str.substrto(4)					// This
 	str["is"] 						// 2
 	str["T", "just"]				// his is a test, this is 
