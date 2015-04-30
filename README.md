@@ -42,6 +42,3 @@ String extensions for Swift. If you do a lot of work with strings, this might he
 	str4.todouble					// 1.8
 	
 	"     ".isblank					// true
-	
-####License:
-Do as you please.  Give credit, don't give credit.  Whatever.
