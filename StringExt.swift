@@ -23,7 +23,7 @@ extension String {
         
         assert( i < self.length, "Index is out of range")
         
-        return self[advance(self.startIndex, i)]
+        return self[self.startIndex.advancedBy(i)]
     }
     
     subscript (str: String) -> Int {
@@ -32,7 +32,7 @@ extension String {
         
         assert(possibleIndex != nil, "Substring not found")
         
-        return "\(self.rangeOfString(str)!.startIndex)".toInt()!
+        return Int("\(self.rangeOfString(str)!.startIndex)")!
     }
     
     subscript (str_start: String, str_end: String) -> String {
@@ -42,7 +42,7 @@ extension String {
     // ====== Functions ======
     
     // Replace string
-    public func replace(#target: String, with: String) -> String {
+    public func replace(target target: String, with: String) -> String {
         return self.stringByReplacingOccurrencesOfString(target, withString: with, options: NSStringCompareOptions.LiteralSearch, range: nil)
     }
     
@@ -66,7 +66,7 @@ extension String {
     }
     
     // Get substring starting with position "start" and end with position "end"
-    public func substr(var #start: Int, var end: Int) -> String {
+    public func substr(var start start: Int, var end: Int) -> String {
         var flipped = false
         
         if start > end {
@@ -84,7 +84,7 @@ extension String {
     }
     
     // Get substring between two sets of strings
-    public func substr(#start: String, end: String) -> String {
+    public func substr(start start: String, end: String) -> String {
         return self[start, end]
     }
     
@@ -94,7 +94,7 @@ extension String {
     }
     
     // Pad a string with character/string (left, right, or both sides)
-    public func padding(#direction: String, repetition: Int, with: String) -> String? {
+    public func padding(direction direction: String, repetition: Int, with: String) -> String? {
         var str = self
         for (var i = 0; i <= repetition; i++) {
             if (direction == "left") {
@@ -109,7 +109,7 @@ extension String {
         }
         return str
     }
-
+    
     // Get substring starting at 0 to index (same as "substrTo()")
     public func left(toIndex: Int) -> String {
         return self[0, toIndex]
@@ -125,12 +125,12 @@ extension String {
     public func startswith(target: String) -> Bool {
         return target == self.left(target.length)
     }
-
+    
     // Check to see if a string ends with "target"
     public func endswith(target: String) -> Bool {
         return target == self.right(target.length)
     }
-
+    
     // See how many times a char/string exists
     public func occurences(sub: String) -> Int {
         var result: Int = 0
@@ -147,20 +147,19 @@ extension String {
         }
         return result
     }
-
+    
     // ======= Vars ======
     
     // Get string length
     var length: Int {
-        return count(self)
+        return self.characters.count
     }
-
+    
     // Trim white spaces from beginning and end of string
     var trim: String {
-        let str = NSCharacterSet.whitespaceCharacterSet()
-        return self.stringByTrimmingCharactersInSet(str)
+        return self.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
     }
-
+    
     // Same as trim, but also includes new line chars
     var strip: String {
         let str = NSCharacterSet.whitespaceAndNewlineCharacterSet()
@@ -169,14 +168,14 @@ extension String {
     
     // Escape HTML string
     var htmlescape: String? {
-        return self.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
     }
     
     // Unescape HTML string
     var htmlunescape: String? {
-        return self.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+        return self.stringByRemovingPercentEncoding
     }
-
+    
     // Convert to lowercase using locale string
     var lowercaselocale: String {
         return self.lowercaseStringWithLocale(NSLocale.currentLocale())
@@ -198,9 +197,9 @@ extension String {
     }
     
     // Swap case of string
-    var swapcase:String {
+    var swapcase: String {
         var result: String = ""
-        for ch in self {
+        for ch in self.characters {
             let s = String(ch)
             result += s.uppercaseString == s ? s.lowercaseString : s.uppercaseString
         }
@@ -216,7 +215,7 @@ extension String {
     var islowercase:Bool {
         return self.lowercaseString == self
     }
-   
+    
     // Return float value
     var tofloat:Float {
         return (self as NSString).floatValue
@@ -226,8 +225,8 @@ extension String {
     var todouble:Double {
         return (self as NSString).doubleValue
     }
-
-    // Check to see if a string is empty/blank. Note that the 
+    
+    // Check to see if a string is empty/blank. Note that the
     // built-in "isEmpty" will return false as long as there is
     // a white space. The code below strips all white spaces
     // including new line characters before determining if the
@@ -239,7 +238,7 @@ extension String {
     // Reverse the string
     var reverse: String {
         var reverseStr = ""
-        for character in self {
+        for character in self.characters {
             reverseStr = "\(character)\(reverseStr)"
         }
         return reverseStr
@@ -248,5 +247,5 @@ extension String {
     mutating func reverseSelf() {
         self = self.reverse
     }
-
+    
 }
