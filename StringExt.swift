@@ -19,18 +19,13 @@ extension String {
         if i < 0 {
             return self.reverse[-(i + 1)]
         }
-        
         assert(i < self.length, "Index is out of range")
-        
         return self[self.index(self.startIndex, offsetBy: i)]
     }
     
     subscript(str: String) -> Int {
-        
         let possibleIndex = self.range(of: str)?.lowerBound
-        
         assert(possibleIndex != nil, "Substring not found")
-        
         return Int("\(self.range(of: str)!.lowerBound)")!
     }
     
@@ -150,7 +145,6 @@ extension String {
             } else {
                 s = s.substring(from: index)
             }
-            
         }
         return result
     }
@@ -181,7 +175,6 @@ extension String {
     // Unescape HTML string
     var htmlunescape: String? {
         return self.removingPercentEncoding
-        //return self.stringByRemovingPercentEncoding
     }
     
     // Convert to lowercase using locale string
