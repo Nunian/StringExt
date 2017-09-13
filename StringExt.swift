@@ -2,8 +2,7 @@
 // StringExt.swift
 //
 // Created by Koua Lo on 4/30/15.
-// Copyright (c) 2015 Koua Lo.  All rights reserved.
-//
+// Last Updated on 10/06/16.
 // License: None, do as you please.
 //
 
@@ -16,39 +15,39 @@ extension String {
         return self.substr(start: start, end: end)
     }
     
-    subscript (var i: Int) -> Character {
+    subscript(i: Int) -> Character {
         if i < 0 {
             return self.reverse[-(i + 1)]
         }
         
-        assert( i < self.length, "Index is out of range")
+        assert(i < self.length, "Index is out of range")
         
-        return self[self.startIndex.advancedBy(i)]
+        return self[self.index(self.startIndex, offsetBy: i)]
     }
     
-    subscript (str: String) -> Int {
+    subscript(str: String) -> Int {
         
-        let possibleIndex = self.rangeOfString(str)?.startIndex
+        let possibleIndex = self.range(of: str)?.lowerBound
         
         assert(possibleIndex != nil, "Substring not found")
         
-        return Int("\(self.rangeOfString(str)!.startIndex)")!
+        return Int("\(self.range(of: str)!.lowerBound)")!
     }
     
-    subscript (str_start: String, str_end: String) -> String {
-        return self.substringWithRange(Range<String.Index>(start: self.rangeOfString(str_start)!.endIndex, end: self.rangeOfString(str_end)!.startIndex))
+    subscript(start: String, end: String) -> String {
+        return self.substring(with: self.range(of: start)!.upperBound ..< self.range(of: end)!.lowerBound)
     }
     
     // ====== Functions ======
     
     // Replace string
-    public func replace(target target: String, with: String) -> String {
-        return self.stringByReplacingOccurrencesOfString(target, withString: with, options: NSStringCompareOptions.LiteralSearch, range: nil)
+    public func replace(target: String, with: String) -> String {
+        return self.replacingOccurrences(of: target, with: with, options: .literal, range: nil)
     }
     
     // Check if a string exists
-    public func exists(searchString: String) -> Bool {
-        if self.rangeOfString(searchString) != nil{
+    public func exists(string: String) -> Bool {
+        if self.range(of: string) != nil{
             return true
         } else {
             return false
@@ -57,46 +56,54 @@ extension String {
     
     // Get substring starting from
     public func substrfrom(start: Int) -> String {
-        return self.substr(start: start, end: self.length)
+        let index = self.index(self.startIndex, offsetBy: start)
+        return self.substring(from: index)
     }
     
     // Get substring up to
     public func substrto(end: Int) -> String {
-        return self.substr(start: 0, end: end)
+        let index = self.index(self.startIndex, offsetBy: end)
+        return self.substring(to: index)
     }
     
     // Get substring starting with position "start" and end with position "end"
-    public func substr(var start start: Int, var end: Int) -> String {
-        var flipped = false
-        
+    public func substr(start: Int, end: Int) -> String {
+        let sidx = self.index(self.startIndex, offsetBy: start)
+        var eidx = self.index(self.endIndex, offsetBy: 0)
         if start > end {
-            swap(&start, &end)
-            flipped = true
+            let n = start + end
+            if n <= self.length {
+                eidx = self.index(self.endIndex, offsetBy: n - self.length)
+            } else {
+                eidx = self.index(self.endIndex, offsetBy: 0)
+            }
+            let range = sidx..<eidx
+            return self.substring(with: range)
+        } else {
+            if end <= self.length {
+                eidx = self.index(self.endIndex, offsetBy: end - self.length)
+            } else {
+                eidx = self.index(self.endIndex, offsetBy: 0)
+             }
+            let range = sidx..<eidx
+            return self.substring(with: range)
         }
-        
-        let substring = (self as NSString).substringWithRange(NSMakeRange(start, end - start))
-        
-        if flipped {
-            return substring.reverse
-        }
-        
-        return substring
     }
     
     // Get substring between two sets of strings
-    public func substr(start start: String, end: String) -> String {
+    public func substr(start: String, end: String) -> String {
         return self[start, end]
     }
     
     // Break string apart with separator
     public func split(separator: String) -> [String] {
-        return self.componentsSeparatedByString(separator)
+        return self.components(separatedBy: separator)
     }
     
     // Pad a string with character/string (left, right, or both sides)
-    public func padding(direction direction: String, repetition: Int, with: String) -> String? {
+    public func padding(direction: String, repetition: Int, with: String) -> String? {
         var str = self
-        for (var i = 0; i <= repetition; i++) {
+        for _ in 0...repetition {
             if (direction == "left") {
                 str = with + str
             } else if (direction == "right") {
@@ -123,12 +130,12 @@ extension String {
     
     // Check to see if a string starts with "target"
     public func startswith(target: String) -> Bool {
-        return target == self.left(target.length)
+        return target == self.left(toIndex: target.length)
     }
     
     // Check to see if a string ends with "target"
     public func endswith(target: String) -> Bool {
-        return target == self.right(target.length)
+        return target == self.right(fromIndex: target.length)
     }
     
     // See how many times a char/string exists
@@ -139,9 +146,9 @@ extension String {
         while s != "" {
             if s.hasPrefix(sub) {
                 result += 1
-                s = s.substringFromIndex(sub.endIndex)
+                s = s.substring(from: sub.endIndex)
             } else {
-                s = s.substringFromIndex(index)
+                s = s.substring(from: index)
             }
             
         }
@@ -157,43 +164,44 @@ extension String {
     
     // Trim white spaces from beginning and end of string
     var trim: String {
-        return self.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
+        return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
     // Same as trim, but also includes new line chars
     var strip: String {
-        let str = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-        return self.stringByTrimmingCharactersInSet(str)
+        let str = NSCharacterSet.whitespacesAndNewlines
+        return self.trimmingCharacters(in: str)
     }
     
     // Escape HTML string
     var htmlescape: String? {
-        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+        return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
     }
     
     // Unescape HTML string
     var htmlunescape: String? {
-        return self.stringByRemovingPercentEncoding
+        return self.removingPercentEncoding
+        //return self.stringByRemovingPercentEncoding
     }
     
     // Convert to lowercase using locale string
     var lowercaselocale: String {
-        return self.lowercaseStringWithLocale(NSLocale.currentLocale())
+        return self.lowercased(with: Locale(identifier: NSLocale.current.languageCode!))
     }
     
     // Convert to uppercase using locale string
     var uppercaselocale: String {
-        return self.uppercaseStringWithLocale(NSLocale.currentLocale())
+        return self.uppercased(with: Locale(identifier: NSLocale.current.languageCode!))
     }
     
     // Convert to lowercase
     var lowercase: String {
-        return self.lowercaseString
+        return self.lowercased()
     }
     
     // Convert to uppercase
     var uppercase: String {
-        return self.uppercaseString
+        return self.uppercased()
     }
     
     // Swap case of string
@@ -201,19 +209,19 @@ extension String {
         var result: String = ""
         for ch in self.characters {
             let s = String(ch)
-            result += s.uppercaseString == s ? s.lowercaseString : s.uppercaseString
+            result += s.uppercased() == s ? s.lowercased() : s.uppercased()
         }
         return result
     }
     
     // Check if string is uppercase
     var isuppercase:Bool {
-        return self.uppercaseString == self
+        return self.uppercased() == self
     }
     
     // Check if string is lowercase
     var islowercase:Bool {
-        return self.lowercaseString == self
+        return self.lowercased() == self
     }
     
     // Return float value
